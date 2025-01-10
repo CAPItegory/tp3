@@ -16,7 +16,7 @@ services:
     networks:
       - postgres
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      test: ["CMD-SHELL", "pg_isready -d postgres -U postgres"]
       interval: 30s
       timeout: 60s
       retries: 5
@@ -63,6 +63,9 @@ services:
   front:
     container_name: shop-client
     build: ./shop-client
+    volumes:
+      - ./shop-client:/app
+      - node_modules_tp3:/app/node_modules
     ports:
       - "4200:4200"
 
@@ -72,3 +75,4 @@ networks:
 
 volumes:
   postgres:
+  node_modules_tp3:
