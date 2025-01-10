@@ -3,7 +3,6 @@ services:
     container_name: shop-db
     image: postgres:17.2
     hostname: "psql_docker"
-    user: postgres
     ports:
       - "5432:5432"
     environment:
