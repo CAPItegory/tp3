@@ -102,6 +102,7 @@ const ProductForm = () => {
     const handleSubmit = () => {
         if (!validate()) return;
         const formatizedProduct = formatterProductForm(product);
+        formatizedProduct.price = formatizedProduct.price * 100;
         if (isAddMode) {
             createProduct(formatizedProduct);
         } else {
