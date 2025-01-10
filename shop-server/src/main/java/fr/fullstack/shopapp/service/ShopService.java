@@ -1,5 +1,6 @@
 package fr.fullstack.shopapp.service;
 
+import fr.fullstack.shopapp.model.OpeningHoursShop;
 import fr.fullstack.shopapp.model.Product;
 import fr.fullstack.shopapp.model.Shop;
 import fr.fullstack.shopapp.repository.ShopRepository;
@@ -25,6 +26,11 @@ public class ShopService {
 
     @Transactional
     public Shop createShop(Shop shop) throws Exception {
+        for(OpeningHoursShop openingHoursShop : shop.getOpeningHours()) {
+            if (openingHoursShop.getOpenAt().isAfter(openingHoursShop.getCloseAt())) {
+                throw new Exception("OpenAt should be before CloseAt");
+            }
+        }
         try {
             Shop newShop = shopRepository.save(shop);
             // Refresh the entity after the save. Otherwise, @Formula does not work.
