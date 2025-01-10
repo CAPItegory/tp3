@@ -1,8 +1,9 @@
 services:
   db:
     container_name: shop-db
-    image: postgres:15
+    image: postgres:17.2
     hostname: "psql_docker"
+    user: postgres
     ports:
       - "5432:5432"
     environment:
@@ -24,10 +25,12 @@ services:
     
   elasticsearch:
     container_name: shop-elasticsearch
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.25
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.0
     hostname: "elasticsearch_docker"
     environment:
       discovery.type: single-node
+      xpack.security.enabled: false
+      xpack.security.enrollment.enabled: false
     ports:
       - "9200:9200"
     networks:
