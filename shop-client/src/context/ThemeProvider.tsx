@@ -1,7 +1,7 @@
-import { createTheme } from '@mui/material';
+import { createTheme, responsiveFontSizes } from '@mui/material';
 import { blueGrey, lightBlue } from '@mui/material/colors';
 
-const myTheme = createTheme({
+const myTheme = responsiveFontSizes(createTheme({
     palette: {
         primary: {
             light: blueGrey[300],
@@ -14,6 +14,6 @@ const myTheme = createTheme({
             dark: lightBlue[300],
         },
     },
-});
+}));
 
 export default myTheme;
