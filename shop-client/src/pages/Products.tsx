@@ -1,4 +1,5 @@
-import { Box, Fab, Grid, Pagination, Typography } from '@mui/material';
+import { Box, Container, Fab, Pagination, Typography } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -35,7 +36,7 @@ const Products = () => {
     };
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, margin: "2rem" }}>
             <Typography variant="h2">Les produits</Typography>
 
             <Box
@@ -53,13 +54,25 @@ const Products = () => {
             </Box>
 
             {/* Products */}
-            <Grid container alignItems="center" rowSpacing={3} columnSpacing={3}>
-                {products?.map((product) => (
-                    <Grid item key={product.id} xs={4}>
-                        <ProductCard product={product} displayShop={true} />
-                    </Grid>
-                ))}
-            </Grid>
+            <Container sx={{display: {xs: 'none', md: 'flex'}}}>
+                <Grid container alignItems="center" rowSpacing={3} columnSpacing={3}>
+                    {products?.map((product) => (
+                        <Grid key={product.id} size={4}>
+                            <ProductCard product={product} displayShop={true} />
+                        </Grid>
+                    ))}
+                </Grid>
+            </Container>
+
+            <Container sx={{display: {xs: 'flex', md: 'none', width:"100%", justifyContent:"center", alignItems:"center"}}}>
+                <Box sx={{display:"flex", flexDirection:"column", width: "100%"}}>
+                    {products?.map((product) => (
+                        <Box key={product.id}>
+                            <ProductCard product={product} />
+                        </Box>
+                    ))}
+                </Box>
+            </Container>
 
             {/* Pagination */}
             {products?.length !== 0 ? (
