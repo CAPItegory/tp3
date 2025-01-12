@@ -67,9 +67,9 @@ const Categories = () => {
             <Container sx={{display: {xs: 'flex', md: 'none', width:"100%", justifyContent:"center", alignItems:"center"}}}>
                 <Box sx={{display:"flex", flexDirection:"column", width: "100%"}}>
                     {categories?.map((category) => (
-                        <Grid key={category.id} size={4}>
+                        <Box key={category.id}>
                             <CategoryCard category={category} />
-                        </Grid>
+                        </Box>
                     ))}
                 </Box>
             </Container>
