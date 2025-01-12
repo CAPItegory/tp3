@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
     front:
         container_name: shop-client
@@ -7,3 +5,9 @@ services:
         ports:
             - '4200:4200'
         restart: always
+        volumes:
+            - .:/app
+            - node_modules_tp3:/app/node_modules
+
+volumes:
+  node_modules_tp3:
