@@ -1,4 +1,5 @@
-import { Box, Fab, Grid, Pagination, Typography } from '@mui/material';
+import { Box, Container, Fab, Pagination, Typography } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -35,7 +36,7 @@ const Categories = () => {
     };
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, margin: "1rem" }}>
             <Typography variant="h2">Les catégories</Typography>
 
             <Box
@@ -53,13 +54,25 @@ const Categories = () => {
             </Box>
 
             {/* Categories */}
-            <Grid container alignItems="center" rowSpacing={3} columnSpacing={3}>
-                {categories?.map((category) => (
-                    <Grid item key={category.id} xs={4}>
-                        <CategoryCard category={category} />
-                    </Grid>
-                ))}
-            </Grid>
+            <Container sx={{display: {xs: 'none', md: 'flex'}}}>
+                <Grid container alignItems="center" rowSpacing={3} columnSpacing={3}>
+                    {categories?.map((category) => (
+                        <Grid key={category.id} size={4}>
+                            <CategoryCard category={category} />
+                        </Grid>
+                    ))}
+                </Grid>
+            </Container>
+
+            <Container sx={{display: {xs: 'flex', md: 'none', width:"100%", justifyContent:"center", alignItems:"center"}}}>
+                <Box sx={{display:"flex", flexDirection:"column", width: "100%"}}>
+                    {categories?.map((category) => (
+                        <Grid key={category.id} size={4}>
+                            <CategoryCard category={category} />
+                        </Grid>
+                    ))}
+                </Box>
+            </Container>
 
             {/* Pagination */}
             {categories?.length !== 0 ? (
