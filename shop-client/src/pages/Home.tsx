@@ -1,15 +1,7 @@
 import {
-    Box,
-    Fab,
-    FormControl,
-    Grid,
-    InputLabel,
-    MenuItem,
-    Pagination,
-    Select,
-    SelectChangeEvent,
-    Typography,
+    Box, Container, Fab, FormControl, InputLabel, MenuItem, Pagination, Select, SelectChangeEvent, Typography,
 } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -61,7 +53,7 @@ const Home = () => {
     };
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, margin: "2rem" }}>
             <Typography variant="h2">Les boutiques</Typography>
 
             <Box
@@ -109,13 +101,25 @@ const Home = () => {
             </Box>
 
             {/* Shops */}
-            <Grid container alignItems="center" rowSpacing={3} columnSpacing={3}>
-                {shops?.map((shop) => (
-                    <Grid item key={shop.id} xs={4}>
-                        <ShopCard shop={shop} />
-                    </Grid>
-                ))}
-            </Grid>
+            <Container sx={{display: {xs: 'none', md: 'flex'}}}>
+                <Grid container alignItems="center" rowSpacing={3} columnSpacing={3}>
+                    {shops?.map((shop) => (
+                        <Grid key={shop.id} size={4}>
+                            <ShopCard shop={shop} />
+                        </Grid>
+                    ))}
+                </Grid>
+            </Container>
+
+            <Container sx={{display: {xs: 'flex', md: 'none', width:"100%", justifyContent:"center", alignItems:"center"}}}>
+                <Box sx={{display:"flex", flexDirection:"column", width: "100%"}}>
+                    {shops?.map((shop) => (
+                        <Box key={shop.id}>
+                            <ShopCard shop={shop} />
+                        </Box>
+                    ))}
+                </Box>
+            </Container>
 
             {/* Pagination */}
             {shops?.length !== 0 ? (

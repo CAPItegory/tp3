@@ -36,7 +36,7 @@ const Categories = () => {
     };
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, margin: "1rem" }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5, margin: "2rem" }}>
             <Typography variant="h2">Les catégories</Typography>
 
             <Box
