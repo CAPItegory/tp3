@@ -30,6 +30,20 @@ public class ShopService {
             if (openingHoursShop.getOpenAt().isAfter(openingHoursShop.getCloseAt())) {
                 throw new Exception("OpenAt should be before CloseAt");
             }
+            long day = openingHoursShop.getDay();
+            if (day < 1 || day > 7) {
+                throw new Exception("Day should be between 1 and 7");
+            }
+            List<OpeningHoursShop> sameDayOpeningHours = shop.getOpeningHours().stream()
+                    .filter(o -> o.getDay() == day)
+                    .filter(o -> o.getId() != openingHoursShop.getId())
+                    .toList();
+            for (OpeningHoursShop sameDayOpeningHour : sameDayOpeningHours) {
+                if (openingHoursShop.getOpenAt().isBefore(sameDayOpeningHour.getCloseAt())
+                        && openingHoursShop.getCloseAt().isAfter(sameDayOpeningHour.getOpenAt())) {
+                    throw new Exception("Opening hours should not overlap for the same day");
+                }
+            }
         }
         try {
             Shop newShop = shopRepository.save(shop);

@@ -719,3 +719,16 @@ insert into products_categories (product_id, category_id) values (292, 45);
 -- Hibernate Sequence --
 
 create sequence hibernate_sequence start 295 increment 1;
+
+-- Set the starting value for the automatic ID system
+select setval('hibernate_sequence', (select max(id) from (
+    select max(id) as id from shops
+    union
+    select max(id) as id from opening_hours
+    union
+    select max(id) as id from categories
+    union
+    select max(id) as id from products
+    union
+    select max(id) as id from localized_product
+) as max_ids));
