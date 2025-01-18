@@ -84,3 +84,12 @@ add constraint FKti43xlm3mfbeodhgi4qn1yhgw foreign key (opening_hours_id) refere
 
 alter table shops_opening_hours
 add constraint FK8dcjdnasobclsvyy8wjfki7gj foreign key (shop_id) references shops;
+
+-- Add indexes on foreign keys
+create index idx_products_shop_id on products(shop_id);
+create index idx_products_categories_category_id on products_categories(category_id);
+create index idx_products_categories_product_id on products_categories(product_id);
+create index idx_products_localized_product_localized_product_id on products_localized_product(localized_product_id);
+create index idx_products_localized_product_product_id on products_localized_product(product_id);
+create index idx_shops_opening_hours_opening_hours_id on shops_opening_hours(opening_hours_id);
+create index idx_shops_opening_hours_shop_id on shops_opening_hours(shop_id);
