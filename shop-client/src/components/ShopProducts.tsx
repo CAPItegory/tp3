@@ -1,7 +1,8 @@
 import { CategoryService, ProductService } from '../services';
 import { useEffect, useState } from 'react';
 import { Category, Product, ResponseArray } from '../types';
-import { Box, FormControl, Grid, Pagination, Typography } from '@mui/material';
+import { Box, Container, FormControl, Pagination, Typography } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import ProductCard from './ProductCard';
 import { useAppContext } from '../context';
 import SelectPaginate from './SelectPaginate';
@@ -67,13 +68,25 @@ const ShopProducts = ({ shopId }: Props) => {
                 </FormControl>
             </Box>
 
-            <Grid container alignItems="center" rowSpacing={3} columnSpacing={3}>
-                {products?.map((product) => (
-                    <Grid item key={product.id} xs={4}>
-                        <ProductCard product={product} />
-                    </Grid>
-                ))}
-            </Grid>
+            <Container sx={{display: {xs: 'none', md: 'flex'}}}>
+                <Grid container alignItems="center" rowSpacing={3} columnSpacing={3}>
+                    {products?.map((product) => (
+                        <Grid key={product.id} size={4}>
+                            <ProductCard product={product} />
+                        </Grid>
+                    ))}
+                </Grid>
+            </Container>
+
+            <Container sx={{display: {xs: 'flex', md: 'none', width:"100%", justifyContent:"center", alignItems:"center"}}}>
+                <Box sx={{display:"flex", flexDirection:"column", width: "100%"}}>
+                    {products?.map((product) => (
+                        <Box key={product.id}>
+                            <ProductCard product={product} />
+                        </Box>
+                    ))}
+                </Box>
+            </Container>
 
             {products?.length !== 0 ? (
                 <Pagination count={count} page={page} siblingCount={1} onChange={handleChangePagination} />
