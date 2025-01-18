@@ -141,13 +141,15 @@ public class ShopService {
         }
     }
 
-    public List<Shop> fullTextShopSearch(String text) {
+    public List<ShopDto> fullTextShopSearch(String text, Optional<Boolean> inVacations, Optional<String> createdAfter, Optional<String> createdBefore) {
         SearchSession searchSession = Search.session(em);
-        return searchSession.search( Shop.class )
-            .where( f -> f.queryString()
-                    .field("name")
-                    .matching( text )
-            ).fetchAllHits();
+        var boolQuery = searchSession.search(Shop.class).where(f -> f.bool().with(b -> {
+            b.must(f.queryString().field("name").matching(text));
+            inVacations.ifPresent(v -> b.must(f.match().field("inVacations").matching(v)));
+            createdAfter.ifPresent(date -> b.must(f.range().field("createdAt").greaterThan(LocalDate.parse(date))));
+            createdBefore.ifPresent(date -> b.must(f.range().field("createdAt").lessThan(LocalDate.parse(date))));
+        }));
+        return boolQuery.fetchAllHits().stream().map(this::shopToDto).collect(Collectors.toList());
     }
 
     public void reindexShops() throws InterruptedException {

@@ -41,12 +41,23 @@ public class ShopController {
     private ShopService service;
 
     @Operation(summary = "Full text search for shops")
+    @Parameters({
+        @Parameter(name = "name", schema = @Schema(type = "string"), description = "Name of the shop to search for"),
+        @Parameter(name = "inVacations", schema = @Schema(type = "boolean"), description = "Define that the shops must be in vacations or not"),
+        @Parameter(name = "createdAfter", schema = @Schema(type = "string"), description = "Define that the shops must be created after this date"),
+        @Parameter(name = "createdBefore", schema = @Schema(type = "string"), description = "Define that the shops must be created before this date")
+    })
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Shops retrieved successfully")
     })
     @GetMapping("/search")
-    public ResponseEntity<List<Shop>> fullTextSearchShops(@RequestParam(required = true) String name) {
-        return ResponseEntity.ok().body(service.fullTextShopSearch(name));
+    public ResponseEntity<List<ShopDto>> fullTextSearchShops(
+            @RequestParam(required = true) String name,
+            @RequestParam(required = false) Optional<Boolean> inVacations,
+            @RequestParam(required = false) Optional<String> createdAfter,
+            @RequestParam(required = false) Optional<String> createdBefore
+    ) {
+        return ResponseEntity.ok().body(service.fullTextShopSearch(name, inVacations, createdAfter, createdBefore));
     }
 
     @Operation(summary = "Create a shop")
