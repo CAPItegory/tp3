@@ -4,7 +4,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ProductCard } from '../components';
-import { useAppContext } from '../context';
+import { useAppContext, useToastContext } from '../context';
 import { ProductService } from '../services';
 import { Product } from '../types';
 
@@ -15,6 +15,7 @@ const Products = () => {
     const [count, setCount] = useState<number>(0);
     const [page, setPage] = useState<number>(0);
     const [pageSelected, setPageSelected] = useState<number>(0);
+    const { setToast } = useToastContext();
 
     const getProducts = () => {
         setLoading(true);
@@ -23,6 +24,9 @@ const Products = () => {
                 setProducts(res.data.content);
                 setCount(res.data.totalPages);
                 setPage(res.data.pageable.pageNumber + 1);
+            })
+            .catch(() => {
+                setToast({severity : 'error', message : 'Une erreur est survenue lors du chargement côté serveur'});
             })
             .finally(() => setLoading(false));
     };
