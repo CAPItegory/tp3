@@ -28,6 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.validation.Valid;
+
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -36,6 +38,15 @@ public class ShopController {
     // TODO ADD PLAIN TEXT SEARCH FOR SHOP
     @Autowired
     private ShopService service;
+
+    @Operation(summary = "Full text search for shops")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Shops retrieved successfully")
+    })
+    @GetMapping("/search")
+    public ResponseEntity<List<Shop>> fullTextSearchShops(@RequestParam(required = true) String name) {
+        return ResponseEntity.ok().body(service.fullTextShopSearch(name));
+    }
 
     @Operation(summary = "Create a shop")
     @ApiResponses(value = {
@@ -125,5 +136,15 @@ public class ShopController {
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
+    }
+
+    @Operation(summary = "Reindex shops")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Shops reindexed successfully")
+    })
+    @GetMapping("/reindex")
+    public ResponseEntity<Void> reindexShops() throws InterruptedException {
+        service.reindexShops();
+        return ResponseEntity.ok().build();
     }
 }

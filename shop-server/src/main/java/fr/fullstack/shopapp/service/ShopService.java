@@ -4,6 +4,10 @@ import fr.fullstack.shopapp.model.OpeningHoursShop;
 import fr.fullstack.shopapp.model.Product;
 import fr.fullstack.shopapp.model.Shop;
 import fr.fullstack.shopapp.repository.ShopRepository;
+
+import org.hibernate.search.mapper.orm.Search;
+import org.hibernate.search.mapper.orm.massindexing.MassIndexer;
+import org.hibernate.search.mapper.orm.session.SearchSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +27,10 @@ public class ShopService {
 
     @Autowired
     private ShopRepository shopRepository;
+
+    public ShopService(ShopRepository shopRepository) {
+        this.shopRepository = shopRepository;
+    }
 
     @Transactional
     public Shop createShop(Shop shop) throws Exception {
@@ -113,6 +121,22 @@ public class ShopService {
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
+    }
+
+    public List<Shop> fullTextShopSearch(String text) {
+        SearchSession searchSession = Search.session(em);
+        return searchSession.search( Shop.class )
+            .where( f -> f.queryString()
+                    .field("name")
+                    .matching( text )
+            ).fetchAllHits();
+    }
+
+    public void reindexShops() throws InterruptedException {
+        SearchSession searchSession = Search.session(em);
+        MassIndexer indexer = searchSession.massIndexer( Shop.class ) 
+        .threadsToLoadObjects( 7 );
+        indexer.startAndWait();
     }
 
     private void deleteNestedRelations(Shop shop) {
