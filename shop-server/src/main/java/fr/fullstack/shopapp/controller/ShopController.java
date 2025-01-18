@@ -1,5 +1,6 @@
 package fr.fullstack.shopapp.controller;
 
+import fr.fullstack.shopapp.dto.ShopDto;
 import fr.fullstack.shopapp.model.Shop;
 import fr.fullstack.shopapp.service.ShopService;
 import fr.fullstack.shopapp.util.ErrorValidation;
@@ -92,14 +93,16 @@ public class ShopController {
         @Parameter(name = "createdBefore", schema = @Schema(type = "string"), description = "Define that the shops must be created before this date")
     })
     @GetMapping
-    public ResponseEntity<Page<Shop>> getAllShops(
-            Pageable pageable,
+    public ResponseEntity<Page<ShopDto>> getAllShops(
+            int page,
+            int size,
             @RequestParam(required = false) Optional<String> sortBy,
             @RequestParam(required = false) Optional<Boolean> inVacations,
             @RequestParam(required = false) Optional<String> createdAfter,
             @RequestParam(required = false) Optional<String> createdBefore
 
     ) {
+        Pageable pageable = Pageable.ofSize(size).withPage(page);
         return ResponseEntity.ok(
                 service.getShopList(sortBy, inVacations, createdAfter, createdBefore, pageable)
         );

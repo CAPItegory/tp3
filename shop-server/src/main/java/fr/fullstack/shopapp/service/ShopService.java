@@ -1,5 +1,6 @@
 package fr.fullstack.shopapp.service;
 
+import fr.fullstack.shopapp.dto.ShopDto;
 import fr.fullstack.shopapp.model.OpeningHoursShop;
 import fr.fullstack.shopapp.model.Product;
 import fr.fullstack.shopapp.model.Shop;
@@ -10,7 +11,9 @@ import org.hibernate.search.mapper.orm.massindexing.MassIndexer;
 import org.hibernate.search.mapper.orm.session.SearchSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +22,7 @@ import jakarta.persistence.PersistenceContext;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ShopService {
@@ -84,7 +88,7 @@ public class ShopService {
         }
     }
 
-    public Page<Shop> getShopList(
+    public Page<ShopDto> getShopList(
             Optional<String> sortBy,
             Optional<Boolean> inVacations,
             Optional<String> createdBefore,
@@ -95,22 +99,36 @@ public class ShopService {
         if (sortBy.isPresent()) {
             switch (sortBy.get()) {
                 case "name":
-                    return shopRepository.findByOrderByNameAsc(pageable);
+                    pageable = PageRequest.of(
+                        pageable.getPageNumber(), pageable.getPageSize(), Sort.by("name").ascending()
+                    );
+                    break;
                 case "createdAt":
-                    return shopRepository.findByOrderByCreatedAtAsc(pageable);
+                    pageable = PageRequest.of(
+                        pageable.getPageNumber(), pageable.getPageSize(), Sort.by("createdAt").ascending()
+                    );
+                    break;
+                case "nbProducts":
+                    pageable = PageRequest.of(
+                        pageable.getPageNumber(), pageable.getPageSize(), Sort.by("products").ascending()
+                    );
+                    break;
                 default:
-                    return shopRepository.findByOrderByNbProductsAsc(pageable);
+                    pageable = PageRequest.of(
+                        pageable.getPageNumber(), pageable.getPageSize(), Sort.by("id").ascending()
+                    );
+                    break;
             }
         }
 
         // FILTERS
         Page<Shop> shopList = getShopListWithFilter(inVacations, createdBefore, createdAfter, pageable);
         if (shopList != null) {
-            return shopList;
+            return shopList.map(this::shopToDto);
         }
 
         // NONE
-        return shopRepository.findByOrderByIdAsc(pageable);
+        return shopRepository.findAll(pageable).map(this::shopToDto);
     }
 
     @Transactional
@@ -207,5 +225,20 @@ public class ShopService {
         }
 
         return null;
+    }
+
+    private ShopDto shopToDto(Shop shop) {
+        ShopDto dto = new ShopDto();
+        dto.setId(shop.getId());
+        dto.setCreatedAt(shop.getCreatedAt());
+        dto.setInVacations(shop.getInVacations());
+        dto.setName(shop.getName());
+        dto.setNbProducts(shop.getNbProducts());
+        dto.setOpeningHours(shop.getOpeningHours());
+        dto.setProducts(shop.getProducts());
+        dto.setNumberOfCategories(shop.getProducts().stream()
+            .flatMap(product -> product.getCategories().stream())
+            .collect(Collectors.toSet()).size());
+        return dto;
     }
 }
